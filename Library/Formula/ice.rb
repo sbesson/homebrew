@@ -10,11 +10,17 @@ class Ice < Formula
 
   # * compile against Berkely DB 5.X
   # * use our selected compiler
+  # * compile with clang and gcc
   def patches
+    {
+      :p1 =>
     [
       "https://trac.macports.org/export/94734/trunk/dports/devel/ice-cpp/files/patch-ice.cpp.config.Make.rules.Darwin.diff",
       DATA
-    ]
+    ],
+     :p0 => "http://www.zeroc.com/forums/attachments/patches/973d1330948195-patch-compiling-ice-clang-gcc4-7-ice_for_clang_2012-03-05.txt",
+    }
+
   end
 
   def site_package_dir
@@ -29,20 +35,6 @@ class Ice < Formula
   option 'demo', 'Build demos'
   option 'java', 'Build java library'
   option 'python', 'Build python library'
-
-
-  # See:
-  # http://www.zeroc.com/forums/bug-reports/4965-slice2cpp-output-does-not-compile-standards-conformant-compiler.html
-  fails_with :clang do
-    build 318
-    cause <<-EOS.undent
-      In file included from BuiltinSequences.cpp:23:
-      In file included from ../../include/Ice/BuiltinSequences.h:30:
-      ../../include/Ice/Stream.h:545:19: error: invalid use of incomplete type 'Ice::MarshalException'
-                  throw MarshalException(__FILE__, __LINE__, "enumerator out of range");
-      (and many other errors)
-    EOS
-  end
 
   def install
     ENV.O2
